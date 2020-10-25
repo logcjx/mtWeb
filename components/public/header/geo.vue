@@ -1,6 +1,6 @@
 <template>
   <div class="m-geo">
-    <i class="el-icon-location"/>{{province}}{{city}}
+    <i class="el-icon-location"/>{{ $store.state.geo.position.city }}
     <nuxt-link
       class="changeCity"
       to="/changeCity">切换城市</nuxt-link>
@@ -18,12 +18,12 @@ export default {
     }
   },
   async mounted(){
-    const {errorCode,errorMessage,returnObject} = await api.getPosition()
+    /* const {errorCode,errorMessage,returnObject} = await api.getPosition()
     console.log(await api.getPosition())
     if(errorCode === '0000'){
         this.province=returnObject.address_detail.province
         this.city=returnObject.address_detail.city
-    }
+    } */
   }
 }
 </script>

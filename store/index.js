@@ -6,8 +6,7 @@ Vue.use(Vuex)
 
 const store = () => new Vuex.Store({
   modules: {
-    geo,
-    home
+    geo
   },
   actions: {
     async nuxtServerInit({
@@ -16,12 +15,11 @@ const store = () => new Vuex.Store({
       const {
         status,
         data: {
-          province,
-          city
+          returnObject
         }
       } = await app.$axios.get('/geo/getPosition')
-      /* commit('geo/setPosition',status===200?{city,province}:{city:'',province:''})
-      const {status:status2,data:{menu}}=await app.$axios.get('geo/menu')
+      commit('geo/setPosition',status===200?{city:returnObject.address_detail.city,province:returnObject.address_detail.province}:{city:'',province:''})
+      /* const {status:status2,data:{menu}}=await app.$axios.get('geo/menu')
       commit('home/setMenu',status2===200?menu:[])
       const {status:status3,data:{result}}=await app.$axios.get('/search/hotPlace',{
         params:{
