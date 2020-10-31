@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 import axios from './utils/axios'
 import Province from '../dbs/models/province'
-
+import Menu from '../dbs/models/Menu'
 let router = new Router({prefix: '/geo'})
 
 const sign = 'abcd';
@@ -111,24 +111,24 @@ router.get('/province/:id', async (ctx) => {
 })
 
 router.get('/city', async (ctx) => {
-  // let city = []
-  // let result = await City.find()
-  // result.forEach(item => {
-  //   city = city.concat(item.value)
-  // })
-  // ctx.body = {
-  //   code: 0,
-  //   city: city.map(item => {
-  //     return {
-  //       province: item.province,
-  //       id: item.id,
-  //       name: item.name === '市辖区' || item.name === '省直辖县级行政区划'
-  //         ? item.province
-  //         : item.name
-  //     }
-  //   })
-  // }
-  let {status, data: {
+   let city = []
+   let result = await City.find()
+   result.forEach(item => {
+     city = city.concat(item.value)
+   })
+   ctx.body = {
+     code: 0,
+     city: city.map(item => {
+       return {
+         province: item.province,
+        id: item.id,
+         name: item.name === '市辖区' || item.name === '省直辖县级行政区划'
+           ? item.province
+           : item.name
+       }
+    })
+   }
+  /* let {status, data: {
       city
     }} = await axios.get(`http://cp-tools.cn/geo/city?sign=${sign}`);
   if (status === 200) {
@@ -139,7 +139,7 @@ router.get('/city', async (ctx) => {
     ctx.body = {
       city: []
     }
-  }
+  } */
 })
 
 router.get('/hotCity', async (ctx) => {
@@ -178,11 +178,23 @@ router.get('/hotCity', async (ctx) => {
 })
 
 router.get('/menu', async (ctx) => {
-  // const result = await Menu.findOne()
-  // ctx.body = {
-  //   menu: result.menu
-  // }
-  let {status, data: {
+  const result = await Menu.findOne()
+    if(result){
+      ctx.body = {
+        errorCode:'0000',
+        errorMessage:'获取成功',
+        returnObject:result.menu
+      }
+    }else{
+      ctx.body = {
+        errorCode:'9999',
+        errorMessage:'数据获取失败',
+        returnObject:[]
+      }
+    }
+  
+   //console.log(result.menu)
+  /* let {status, data: {
       menu
     }} = await axios.get(`http://cp-tools.cn/geo/menu?sign=${sign}`);
   if (status === 200) {
@@ -193,7 +205,7 @@ router.get('/menu', async (ctx) => {
     ctx.body = {
       menu: []
     }
-  }
+  } */
 })
 
 export default router;
