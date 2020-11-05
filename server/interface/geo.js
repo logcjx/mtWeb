@@ -41,64 +41,53 @@ router.get('/getPosition', async (ctx) => {
 })
 
 router.get('/province', async (ctx) => {
-   let province = await Address.find({'type':2,'parent_id':1})
-   if(province.length !=0 ){
+  try {
+    let province = await Address.find({'type':2,'parent_id':1})
     ctx.body = {
-      province: province.map(item => {
+      errorCode:'0000',
+      errorMessage:'获取成功',
+      returnObject:province.map(item => {
         return {
-          id: item.id,
-          name: item.name
-       }
+            id: item.id,
+            name: item.name
+        }
       })
     }
-   }else{
+  }catch(e){
     ctx.body = {
-      province: []
+      errorCode:'9999',
+      errorMessage:'获取失败',
+      returnObject: []
     }
-   }
+  }
+   
+   
+    
+   
  
   })
 
-router.get('/province/:id', async (ctx) => {
-  // let city = await City.findOne({id: ctx.params.id})
-  //
-  // ctx.body = {
-  //   code: 0,
-  //   city: city.value.map(item => {
-  //     return {province: item.province, id: item.id, name: item.name}
-  //   })
-  // }
-  /* let {status, data: {
-      city
-    }} = await axios.get(`http://cp-tools.cn/geo/province/${ctx.params.id}?sign=${sign}`)
-  if (status === 200) {
-    ctx.body = {
-      city
-    }
-  } else {
-    ctx.body = {
-      city: []
-    }
-  } */
-})
+router.get('/province/:id', async (ctx) => {})
 
 router.get('/city', async (ctx,) => {
-  console.log('参数', parseInt(ctx.query.parentId))
-  let city = await City.find({'type':3,'parent_id': parseInt(ctx.query.parentId)})
-  
-  if(city.length !=0 ){
-   ctx.body = {
-      city: city.map(item => {
+  try {
+    let city = await City.find({'type':3,'parent_id': parseInt(ctx.query.parentId)})
+    ctx.body = {
+      errorCode:'0000',
+      errorMessage:'获取成功',
+      returnObject:city.map(item => {
         return {
           id: item.id,
           name: item.name
         }
-     })
-   }
-  }else{
-   ctx.body = {
-    city: []
-   }
+      })
+    }
+  }catch(e){
+    ctx.body = {
+      errorCode:'9999',
+      errorMessage:'获取失败',
+      returnObject:[]
+     }
   }
 })
 

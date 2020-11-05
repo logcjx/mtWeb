@@ -1,11 +1,35 @@
 import Router from 'koa-router';
 import axios from './utils/axios'
 import Poi from '../dbs/models/poi'
-import sign from './utils/sign'
+//import sign from './utils/sign'
 
 let router = new Router({prefix: '/search'})
 
 router.get('/top', async (ctx) => {
+  try{
+    let top = await Poi.find({'name': {"$regex":new RegExp(ctx.query.name)}})
+    console.log(ctx.query)
+    ctx.body = {
+            errorCode:'0000',
+            errorMessage:'获取成功',
+            returnObject: {
+                top:top.map(item => {
+                  return {
+                    name: item.name,
+                    type: item.type
+                  }
+                }),
+                type: top.length ? top[0].type : ''
+            }
+           
+         }
+  }catch(e){
+    ctx.body = {
+      errorCode:'9999',
+      errorMessage:'获取失败',
+      returnObject:{}
+     }
+  }
   // try {
   //   let top = await Poi.find({
   //     'name': new RegExp(ctx.query.input),
@@ -27,7 +51,7 @@ router.get('/top', async (ctx) => {
   //     top: []
   //   }
   // }
-  let {status, data: {
+  /* let {status, data: {
       top
     }} = await axios.get(`http://cp-tools.cn/search/top`, {
     params: {
@@ -40,7 +64,7 @@ router.get('/top', async (ctx) => {
     top: status === 200
       ? top
       : []
-  }
+  } */
 })
 
 router.get('/hotPlace', async (ctx) => {
