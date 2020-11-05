@@ -1,7 +1,9 @@
 import Router from 'koa-router';
 import axios from './utils/axios'
 import Address from '../dbs/models/province'
+import City from '../dbs/models/province'
 import Menu from '../dbs/models/Menu'
+
 let router = new Router({prefix: '/geo'})
 
 const sign = 'abcd';
@@ -40,23 +42,21 @@ router.get('/getPosition', async (ctx) => {
 
 router.get('/province', async (ctx) => {
    let province = await Address.find({'type':2,'parent_id':1})
-   console.log(province)
-   ctx.body = {
-     province: province.map(item => {
-       return {
-         id: item.id,
-         name: item.name
-      }
-     })
-   } 
-  /* let {status, data: {
-      province
-    }} = await axios.get(`http://cp-tools.cn/geo/province?sign=${sign}`)
+   if(province.length !=0 ){
     ctx.body = {
-      province: status === 200
-        ? province
-        : []
-    } */
+      province: province.map(item => {
+        return {
+          id: item.id,
+          name: item.name
+       }
+      })
+    }
+   }else{
+    ctx.body = {
+      province: []
+    }
+   }
+ 
   })
 
 router.get('/province/:id', async (ctx) => {
@@ -82,36 +82,24 @@ router.get('/province/:id', async (ctx) => {
   } */
 })
 
-router.get('/city', async (ctx) => {
-   let city = []
-   let result = await City.find()
-   result.forEach(item => {
-     city = city.concat(item.value)
-   })
+router.get('/city', async (ctx,) => {
+  console.log('参数', parseInt(ctx.query.parentId))
+  let city = await City.find({'type':3,'parent_id': parseInt(ctx.query.parentId)})
+  
+  if(city.length !=0 ){
    ctx.body = {
-     code: 0,
-     city: city.map(item => {
-       return {
-         province: item.province,
-        id: item.id,
-         name: item.name === '市辖区' || item.name === '省直辖县级行政区划'
-           ? item.province
-           : item.name
-       }
-    })
+      city: city.map(item => {
+        return {
+          id: item.id,
+          name: item.name
+        }
+     })
    }
-  /* let {status, data: {
-      city
-    }} = await axios.get(`http://cp-tools.cn/geo/city?sign=${sign}`);
-  if (status === 200) {
-    ctx.body = {
-      city
-    }
-  } else {
-    ctx.body = {
-      city: []
-    }
-  } */
+  }else{
+   ctx.body = {
+    city: []
+   }
+  }
 })
 
 router.get('/hotCity', async (ctx) => {
