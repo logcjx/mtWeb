@@ -1,12 +1,8 @@
 import mongoose from 'mongoose'
 const Schema = mongoose.Schema
-const Province=new Schema({
+const Address=new Schema({
   id:{
-    type:String,
-    require:true
-  },
-  type:{
-    type:String,
+    type:Number,
     require:true
   },
   name:{
@@ -15,4 +11,4 @@ const Province=new Schema({
   }
 })
 
-export default mongoose.model('Province',Province)
+export default mongoose.model('address',Address,'address')

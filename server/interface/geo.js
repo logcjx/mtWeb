@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 import axios from './utils/axios'
-import Province from '../dbs/models/province'
+import Address from '../dbs/models/province'
 import Menu from '../dbs/models/Menu'
 let router = new Router({prefix: '/geo'})
 
@@ -39,14 +39,13 @@ router.get('/getPosition', async (ctx) => {
 })
 
 router.get('/province', async (ctx) => {
-   let province = await Province.find()
+   let province = await Address.find({'type':2,'parent_id':1})
    console.log(province)
-   console.log(' 省份',province)
-    ctx.body = {
+   ctx.body = {
      province: province.map(item => {
        return {
          id: item.id,
-         name: item.value[0]
+         name: item.name
       }
      })
    } 
