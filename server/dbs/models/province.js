@@ -5,11 +5,14 @@ const Province=new Schema({
     type:String,
     require:true
   },
-  value:{
-    type:Array,
+  type:{
+    type:String,
     require:true
   },
-  
+  name:{
+    type:String,
+    require:true
+  }
 })
 
 export default mongoose.model('Province',Province)
