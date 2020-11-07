@@ -17,29 +17,34 @@
             placeholder="搜索商家或地点"
             @focus="focus"
             @blur="blur"
+            @input="input"
             />
           <button class="el-button el-button--primary"><i class="el-icon-search"/></button>
           <dl
             v-if="isHotPlace"
             class="hotPlace">
             <dt>热门搜索</dt>
-            <dd>火锅</dd>
-            <dd>火锅</dd>
-            <dd>火锅</dd>
+            <dd
+              v-for="(item,idx) in $store.state.home.hotPlace.slice(0,5)"
+              :key="idx">
+              <a :href="'/products?keyword='+encodeURIComponent(item.name)">{{ item.name }}</a>
+            </dd>
           </dl>
           <dl
-              v-if="isSearchList"
-              class="searchList">
-              <dd>火锅1</dd>
-              <dd>火锅1</dd>
-              <dd>火锅1</dd>
+            v-if="isSearchList"
+            class="searchList">
+            <dd
+              v-for="(item,idx) in searchList"
+              :key="idx">
+              <a :href="'/products?keyword='+encodeURIComponent(item.name)">{{ item.name }}</a>
+            </dd>
           </dl>
         </div>
         <p class="suggest">
-            <a href="#">博物馆</a>
-            <a href="#">博物馆</a>
-            <a href="#">博物馆</a>
-            <a href="#">博物馆</a>
+          <a
+            v-for="(item,idx) in $store.state.home.hotPlace.slice(0,5)"
+            :key="idx"
+            :href="'/products?keyword='+encodeURIComponent(item.name)">{{ item.name }}</a>
         </p>
         <ul class="nav">
           <li><nuxt-link
@@ -73,6 +78,7 @@
 </template>
 
 <script>
+import lodash from 'lodash'
   export default{
     data(){
       return{
@@ -90,13 +96,31 @@
         return this.isFocus && this.search
       }
     },
+    created(){
+      console.log(this.$store.state.home.hotPlace)
+    },
     methods:{
       focus(){
         this.isFocus = true
       },
       blur(){
         this.isFocus = false
+      },
+      input(){
+          const audit = lodash.debounce(async () => {
+          let city=this.$store.state.geo.position.city.replace('市','')
+          this.searchList=[]
+          let {status,data:{returnObject}}=await this.$axios.get('/search/top',{
+            params:{
+              name:this.search,
+              city
+            }
+          })
+          this.searchList=returnObject.top.slice(0,10)
+        },300)
+        audit();
       }
+      
     },
   }
 </script>

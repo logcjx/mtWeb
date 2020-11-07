@@ -7,8 +7,7 @@ let router = new Router({prefix: '/search'})
 
 router.get('/top', async (ctx) => {
   try{
-    let top = await Poi.find({'name': {"$regex":new RegExp(ctx.query.name)}})
-    console.log(ctx.query)
+    let top = await Poi.find({'name': {"$regex":new RegExp(ctx.query.name)},'city':ctx.query.city})
     ctx.body = {
             errorCode:'0000',
             errorMessage:'获取成功',
@@ -68,6 +67,31 @@ router.get('/top', async (ctx) => {
 })
 
 router.get('/hotPlace', async (ctx) => {
+  let city = ctx.store ? ctx.store.geo.position.city : ctx.query.city
+  try{
+    let hotPlace = await Poi.find({'type': {"$regex":ctx.query.type || '丽人'},'city':city})
+    ctx.body = {
+      errorCode:'0000',
+      errorMessage:'获取成功',
+      returnObject: {
+            hotPlace:hotPlace.map(item => {
+              return {
+                name: item.name,
+                type: item.type
+              }
+          }),
+          type: hotPlace.length ? hotPlace[0].type : ''
+      }
+     
+   }
+
+  }catch (e) {
+    ctx.body = {
+      errorCode:'9999',
+      errorMessage:'获取失败',
+      returnObject:{}
+     }
+  }
   // let city = ctx.store ? ctx.store.geo.position.city : ctx.query.city
   // try {
   //   let result = await Poi.find({
@@ -90,7 +114,7 @@ router.get('/hotPlace', async (ctx) => {
   //     result: []
   //   }
   // }
-  let city = ctx.store
+  /* let city = ctx.store
     ? ctx.store.geo.position.city
     : ctx.query.city
   let {status, data: {
@@ -105,7 +129,7 @@ router.get('/hotPlace', async (ctx) => {
     result: status === 200
       ? result
       : []
-  }
+  } */
 })
 
 router.get('/resultsByKeywords', async (ctx) => {
