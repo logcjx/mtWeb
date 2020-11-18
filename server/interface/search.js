@@ -1,6 +1,8 @@
 import Router from 'koa-router';
 import axios from './utils/axios'
 import Poi from '../dbs/models/poi'
+import Act from '../dbs/models/search'
+
 //import sign from './utils/sign'
 
 let router = new Router({prefix: '/search'})
@@ -92,67 +94,29 @@ router.get('/hotPlace', async (ctx) => {
       returnObject:{}
      }
   }
-  // let city = ctx.store ? ctx.store.geo.position.city : ctx.query.city
-  // try {
-  //   let result = await Poi.find({
-  //     city,
-  //     type: ctx.query.type || '景点'
-  //   }).limit(10)
-  //
-  //   ctx.body = {
-  //     code: 0,
-  //     result: result.map(item => {
-  //       return {
-  //         name: item.name,
-  //         type: item.type
-  //       }
-  //     })
-  //   }
-  // } catch (e) {
-  //   ctx.body = {
-  //     code: -1,
-  //     result: []
-  //   }
-  // }
-  /* let city = ctx.store
-    ? ctx.store.geo.position.city
-    : ctx.query.city
-  let {status, data: {
-      result
-    }} = await axios.get(`http://cp-tools.cn/search/hotPlace`, {
-    params: {
-      sign,
-      city
-    }
-  })
-  ctx.body = {
-    result: status === 200
-      ? result
-      : []
-  } */
 })
 
 router.get('/resultsByKeywords', async (ctx) => {
   const {city, keyword} = ctx.query;
-  let {
-    status,
-    data: {
-      count,
-      pois
-    }
-  } = await axios.get('http://cp-tools.cn/search/resultsByKeywords', {
-    params: {
-      city,
-      keyword,
-      sign
-    }
-  })
-  ctx.body = {
-    count: status === 200 ? count : 0,
-    pois: status === 200
-      ? pois
-      : []
+  try{
+    let setKeyWords = keyword ? {'type': keyword }: {}
+    let act = await Act.find({'$or':[{'$and':[setKeyWords]}]})
+    
+    ctx.body = {
+      errorCode:'0000',
+      errorMessage:'获取成功',
+      returnObject: act
+     
+   }
+
+  }catch (e) {
+    ctx.body = {
+      errorCode:'9999',
+      errorMessage:'获取失败',
+      returnObject:{}
+     }
   }
+  
 })
 
 router.get('/products', async (ctx) => {
@@ -168,7 +132,7 @@ router.get('/products', async (ctx) => {
     params: {
       keyword,
       city,
-      sign
+      //sign
     }
   })
   if (status === 200) {
