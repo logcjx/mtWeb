@@ -98,6 +98,7 @@ router.get('/hotPlace', async (ctx) => {
 
 router.get('/resultsByKeywords', async (ctx) => {
   const {city, keyword} = ctx.query;
+  console.log(keyword)
   try{
     let setKeyWords = keyword ? {'type': keyword }: {}
     let act = await Act.find({'$or':[{'$and':[setKeyWords]}]})

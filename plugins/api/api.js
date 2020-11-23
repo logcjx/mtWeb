@@ -3,6 +3,7 @@ import {post,get,patch,put} from './index'
 /* let baseUrl2 = `${window.location.protocol}//${window.location.host}/maiyoucard01` */
 let baseUrl = `/users`
 let baseUrl1 = `/geo`
+let baseUrl2 = `/search`
 //let baseUrl3 = `${window.location.protocol}//${window.location.host}/maiyoucard01`
 //获取微信用户信息
 //export const getUserInfo = (data) => get(`${baseUrl}/maiyou-wechat-api/mp/userinfo/getUserInfo`,data)
@@ -13,10 +14,12 @@ export const signin = (data) => post(`${baseUrl}/signin`, data)
 export const getUser = (data) => get(`${baseUrl}/getUser`, data)
 export const exit = (data) => get(`${baseUrl}/exit`, data)
 export const getPosition = (data) => get(`${baseUrl1}/getPosition`, data)
+export const resultsByKeywords = (data) => get(`${baseUrl2}/resultsByKeywords`, data)
 export default {
   verify,
   signup,
   signin,
   getUser,
-  getPosition
+  getPosition,
+  resultsByKeywords
 }

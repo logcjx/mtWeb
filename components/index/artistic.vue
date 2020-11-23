@@ -44,6 +44,7 @@
   </section>
 </template>
 <script>
+import api from '@/plugins/api/api'
 export default {
   data: () => {
     return {
@@ -86,7 +87,24 @@ export default {
     }
   },
   methods: {
-    over: async function (e) {
+    async over(e){
+      let dom = e.target
+      let tag = dom.tagName.toLowerCase()
+      console.log(e)
+      
+      if(dom.localName === 'dd'){
+          this.kind = dom.getAttribute('kind')
+          //let keyword = dom.getAttribute('keyword')
+          let {status,returnObject} =await api.resultsByKeywords({
+              keyword:this.kind === 'all' ? '' : this.kind
+          })
+          if(status===200){
+            console.log(returnObject)
+          }
+      }
+      //console.log(e)
+    },
+    /* over: async function (e) {
       let dom = e.target
       let tag = dom.tagName.toLowerCase()
       let self = this
@@ -114,7 +132,7 @@ export default {
           self.list[self.kind]=[]
         }
       }
-    }
+    } */
   },
 
 }
