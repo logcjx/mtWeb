@@ -35,7 +35,7 @@
             class="image">
           <ul class="cbody">
             <li class="title">{{ item.title }}</li>
-            <li class="pos"><span>{{ item.pos }}</span></li>
+            <li class="pos"><span>整套1居室，可住2人 | {{ item.pos }}</span></li>
             <li class="price">￥<em>{{ item.price }}</em><span>/起</span></li>
           </ul>
         </el-card>
@@ -59,50 +59,43 @@ export default {
     }
   },
   computed: {
-    cur: function () {
+    cur() {
       return this.list[this.kind]
     }
   },
   async mounted(){
-    let self=this;
-    let {status,data:{count,pois}}=await self.$axios.get('/search/resultsByKeywords',{
-      params:{
-        keyword:'景点',
-        city:self.$store.state.geo.position.city
-      }
-    })
-    if(status===200&&count>0){
-      let r= pois.filter(item=>item.photos.length).map(item=>{
-        return {
-          title:item.name,
-          pos:item.type.split(';')[0],
-          price:item.biz_ext.cost||'暂无',
-          img:item.photos[0].url,
-          url:'//abc.com'
-        }
-      })
-      self.list[self.kind]=r.slice(0,9)
-    }else{
-      self.list[self.kind]=[]
-    }
+    this.getDate()
   },
   methods: {
     async over(e){
       let dom = e.target
       let tag = dom.tagName.toLowerCase()
-      console.log(e)
-      
-      if(dom.localName === 'dd'){
-          this.kind = dom.getAttribute('kind')
-          //let keyword = dom.getAttribute('keyword')
-          let {status,returnObject} =await api.resultsByKeywords({
-              keyword:this.kind === 'all' ? '' : this.kind
-          })
-          if(status===200){
-            console.log(returnObject)
-          }
+      if (tag === 'dd') {
+        this.kind = dom.getAttribute('kind')
+        let keyword = dom.getAttribute('keyword')
+        this.getDate()
+
       }
-      //console.log(e)
+
+    },
+    async getDate(){
+        let {errorCode,returnObject}=await await api.resultsByKeywords({
+              keyword:this.kind
+            })
+        if(errorCode==='0000'){
+          let r= returnObject.map(item=>{
+            return {
+              title:item.title,
+              pos:item.type.locationArea,
+              price:item.price||'暂无',
+              img:item.coverImage,
+              url:'//abc.com'
+            }
+          })
+          this.list[this.kind]=r
+        }else{
+          this.list[this.kind]=[]
+        }
     },
     /* over: async function (e) {
       let dom = e.target

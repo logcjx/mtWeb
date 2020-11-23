@@ -100,7 +100,8 @@ router.get('/resultsByKeywords', async (ctx) => {
   const {city, keyword} = ctx.query;
   console.log(keyword)
   try{
-    let setKeyWords = keyword ? {'type': keyword }: {}
+    let setKeyWords = keyword === 'all' ? {} : {'type': keyword }
+    console.log(1,setKeyWords,keyword === '')
     let act = await Act.find({'$or':[{'$and':[setKeyWords]}]})
     
     ctx.body = {
