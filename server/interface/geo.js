@@ -3,7 +3,7 @@ import axios from './utils/axios'
 import Address from '../dbs/models/province'
 import City from '../dbs/models/province'
 import Menu from '../dbs/models/Menu'
-
+import SearchCity from '../dbs/models/searchCity'
 let router = new Router({prefix: '/geo'})
 
 const sign = 'abcd';
@@ -79,6 +79,40 @@ router.get('/city', async (ctx,) => {
         return {
           id: item.id,
           name: item.name
+        }
+      })
+    }
+  }catch(e){
+    ctx.body = {
+      errorCode:'9999',
+      errorMessage:'获取失败',
+      returnObject:[]
+     }
+  }
+})
+
+router.get('/searchCity', async (ctx) => {
+  try {
+    let pattern = new RegExp("[\u4E00-\u9FA5]+");
+    let pattern2 = new RegExp("[A-Za-z]+");
+    let searchCity 
+   
+    if(pattern.test(ctx.query.value)){
+      searchCity = await SearchCity.find({'value':{"$regex":new RegExp(ctx.query.value)}})
+    }else if(pattern2.test(ctx.query.value)){
+      searchCity = await SearchCity.find({'cityPinYin':{"$regex":new RegExp(ctx.query.value)}})
+    }else{
+      searchCity = []
+    }
+    ctx.body = {
+      errorCode:'0000',
+      errorMessage:'获取成功',
+      returnObject:searchCity.map(item => {
+        return {
+          cityPinYin: item.cityPinYin,
+          value:item.value,
+          name:item.name,
+          cityAcronym:item.name,
         }
       })
     }

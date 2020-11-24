@@ -14,6 +14,8 @@ export const signin = (data) => post(`${baseUrl}/signin`, data)
 export const getUser = (data) => get(`${baseUrl}/getUser`, data)
 export const exit = (data) => get(`${baseUrl}/exit`, data)
 export const getPosition = (data) => get(`${baseUrl1}/getPosition`, data)
+export const getProvince = (data) => get(`${baseUrl1}/province`, data)
+export const getCity = (data) => get(`${baseUrl1}/city`, data)
 export const resultsByKeywords = (data) => get(`${baseUrl2}/resultsByKeywords`, data)
 export default {
   verify,
@@ -21,5 +23,7 @@ export default {
   signin,
   getUser,
   getPosition,
-  resultsByKeywords
+  resultsByKeywords,
+  getProvince,
+  getCity
 }
