@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import api from '@/plugins/api/api'
 export default {
   data(){
     return {
@@ -17,9 +18,9 @@ export default {
     }
   },
   async mounted(){
-    let {status,data:{hots}}=await this.$axios.get('/geo/hotCity')
-    if(status===200){
-      this.list=hots
+    let {errorCode,returnObject}=await api.hotCity()
+    if(errorCode==='0000'){
+      this.list=returnObject
     }
   }
 }
