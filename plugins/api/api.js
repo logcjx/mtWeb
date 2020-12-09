@@ -18,6 +18,7 @@ export const getProvince = (data) => get(`${baseUrl1}/province`, data)
 export const getCity = (data) => get(`${baseUrl1}/city`, data)
 export const resultsByKeywords = (data) => get(`${baseUrl2}/resultsByKeywords`, data)
 export const hotCity = (data) => get(`${baseUrl1}/hotCity`, data)
+export const city = (data) => get(`${baseUrl1}/city`, data)
 export default {
   verify,
   signup,
@@ -27,5 +28,6 @@ export default {
   resultsByKeywords,
   getProvince,
   getCity,
-  hotCity
+  hotCity,
+  city
 }

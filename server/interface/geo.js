@@ -69,9 +69,15 @@ router.get('/province', async (ctx) => {
 
 router.get('/province/:id', async (ctx) => {})
 
-router.get('/city', async (ctx,) => {
+router.get('/city', async (ctx) => {
   try {
-    let city = await City.find({'type':3,'parent_id': parseInt(ctx.query.parentId)})
+    let city
+    if(ctx.query.parentId){
+      city = await City.find({'type':3,'parent_id': parseInt(ctx.query.parentId)})
+    }else{
+      city = await City.find({'type':3})
+    }
+    
     ctx.body = {
       errorCode:'0000',
       errorMessage:'获取成功',
